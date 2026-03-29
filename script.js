@@ -1,5 +1,7 @@
 let estoque = JSON.parse(localStorage.getItem("estoque")) || {};
-
+  let historico = JSON.parse(localStorage.getItem("historico")) || [];
+  if(!Array.isArray(historico));
+    historico = [];
 const prateleirasFixas = ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"];
 const andares = ["A", "B", "C", "D"];
 const maxPosicoes = 14;
@@ -7,7 +9,35 @@ const maxPosicoes = 14;
 // 💾 Salvar
 function salvar() {
   localStorage.setItem("estoque", JSON.stringify(estoque));
+  localStorage.setItem("historico", JSON.stringify(historico));
 }
+
+  // log
+  function log(acao) {
+    let registro = {
+      acao,
+      data: new Date().toLocaleString()
+    };
+
+    historico.push(registro);
+    localStorage.setItem("historico", JSON.stringify(historico));
+    mostrarHistorico();
+  };
+
+  // Mostrar historico
+  function mostrarHistorico() {
+    let historicoDiv = document.getElementById("historico");
+    historicoDiv.innerHTML = "";
+
+    let html = "";
+
+    historico.slice(-5).reverse().forEach(registro => {
+      if (!registro) return;
+      html += `<p>${registro.data} - ${registro.acao}</p>`;
+    });
+
+    historicoDiv.innerHTML = html;
+  }
 
 // ➕ Adicionar item
 function adicionarItem() {
