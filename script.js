@@ -26,18 +26,13 @@ function salvar() {
 
   // Mostrar historico
   function mostrarHistorico() {
-    let historicoDiv = document.getElementById("historico");
-    historicoDiv.innerHTML = "";
+  let div = document.getElementById("historico");
+  div.innerHTML = "";
 
-    let html = "";
-
-    historico.slice(-5).reverse().forEach(registro => {
-      if (!registro) return;
-      html += `<p>${registro.data} - ${registro.acao}</p>`;
-    });
-
-    historicoDiv.innerHTML = html;
-  }
+  historico.slice(-20).reverse().forEach(h => {
+    div.innerHTML += `🕒 ${h.data} → ${h.acao}<br>`;
+  });
+}
 
 // ➕ Adicionar item
 function adicionarItem() {
@@ -229,3 +224,4 @@ document.getElementById("bloco").addEventListener("input", function() {
 
 // 🚀 Inicializar
 mostrarMapa();
+mostrarHistorico();

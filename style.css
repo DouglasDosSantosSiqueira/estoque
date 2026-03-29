@@ -149,3 +149,12 @@ button:hover {
     grid-template-columns: repeat(7, 1fr); /* quebra em 2 linhas no celular */
   }
 }
+
+/* historico */
+#historico {
+  background: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow: auto;
+}
