@@ -34,6 +34,23 @@ function salvar() {
   });
 }
 
+// adiciona historico 
+function adicionarHistorico(acao) {
+  let registro = {
+    data: new Date().toLocaleString(),
+    acao: acao
+  };
+
+  historico.push(registro);
+
+  if (historico.length > 20) {
+    historico.shift();
+  }
+
+  salvar();
+  mostrarHistorico();
+}
+
 // ➕ Adicionar item
 function adicionarItem() {
   let p = document.getElementById("prateleira").value.toUpperCase();
@@ -58,6 +75,8 @@ function adicionarItem() {
   document.getElementById("nome").value = "";
 
   document.getElementById("prateleira").focus();
+
+   adicionarHistorico(`adicionado "${nome}" em ${p} ${b}`);
 }
 
 // 🗺️ Mostrar mapa
@@ -192,6 +211,7 @@ function removerItem(p, b, i) {
 
   salvar();
   mostrarMapa();
+   adicionarHistorico(`removido item de ${p} ${b}`);
 }
 
 // 🔥 ATALHOS
