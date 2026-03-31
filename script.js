@@ -1,71 +1,67 @@
 let estoque = JSON.parse(localStorage.getItem("estoque")) || {};
-  let historico = JSON.parse(localStorage.getItem("historico")) || [];
-  if(!Array.isArray(historico));
-    historico = [];
-const prateleirasFixas = ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"];
-const andares = ["A", "B", "C", "D"];
+let historico = JSON.parse(localStorage.getItem("historico")) || [];
+
+if (!Array.isArray(historico)) {
+  historico = [];
+}
+
+const prateleirasFixas = ["P1","P2","P3","P4","P5","P6","P7","P8"];
+const andares = ["A","B","C","D"];
 const maxPosicoes = 14;
 
-// 💾 Salvar
+// 💾 salvar
 function salvar() {
   localStorage.setItem("estoque", JSON.stringify(estoque));
   localStorage.setItem("historico", JSON.stringify(historico));
 }
 
-  // log
-  function log(acao) {
-    let registro = {
-      acao,
-      data: new Date().toLocaleString()
-    };
-
-    historico.push(registro);
-    localStorage.setItem("historico", JSON.stringify(historico));
-    mostrarHistorico();
-  };
-
-  // Mostrar historico
-  function mostrarHistorico() {
-  let div = document.getElementById("historico");
-  div.innerHTML = "";
-
-  historico.slice(-20).reverse().forEach(h => {
-    div.innerHTML += `🕒 ${h.data} → ${h.acao}<br>`;
-  });
-}
-
-// adiciona historico 
+// 🧾 histórico
 function adicionarHistorico(acao) {
-  let registro = {
+  historico.push({
     data: new Date().toLocaleString(),
-    acao: acao
-  };
+    acao
+  });
 
-  historico.push(registro);
-
-  if (historico.length > 20) {
-    historico.shift();
-  }
+  if (historico.length > 20) historico.shift();
 
   salvar();
   mostrarHistorico();
 }
 
-// ➕ Adicionar item
+// 📜 mostrar histórico
+function mostrarHistorico() {
+  let div = document.getElementById("historico");
+  if (!div) return;
+
+  div.innerHTML = "";
+
+  historico.slice().reverse().forEach(h => {
+    div.innerHTML += `🕒 ${h.data} → ${h.acao}<br>`;
+  });
+}
+
+// ✅ validar posição
+function posicaoValida(pos) {
+  let letra = pos[0];
+  let numero = parseInt(pos.slice(1));
+  return ["A","B","C","D"].includes(letra) && numero >= 1 && numero <= 14;
+}
+
+// ➕ adicionar item
 function adicionarItem() {
   let p = document.getElementById("prateleira").value.toUpperCase();
   let b = document.getElementById("bloco").value.toUpperCase();
   let nome = document.getElementById("nome").value;
 
-  let valido = /^[A-D](?:[1-9]|1[0-4])$/;
-
   if (!p || !b || !nome) return alert("Preencha tudo!");
-  if (!valido.test(b)) return alert("Use A1 até D14");
+  if (!posicaoValida(b)) return alert("Use A1 até D14");
 
   if (!estoque[p]) estoque[p] = {};
   if (!estoque[p][b]) estoque[p][b] = [];
 
   estoque[p][b].push({ nome });
+
+  adicionarHistorico(`Adicionou "${nome}" em ${p}-${b}`);
 
   salvar();
   mostrarMapa();
@@ -73,13 +69,9 @@ function adicionarItem() {
   document.getElementById("prateleira").value = "";
   document.getElementById("bloco").value = "";
   document.getElementById("nome").value = "";
-
-  document.getElementById("prateleira").focus();
-
-   adicionarHistorico(`adicionado "${nome}" em ${p} ${b}`);
 }
 
-// 🗺️ Mostrar mapa
+// 🗺️ mapa
 function mostrarMapa(filtro = "") {
   let mapa = document.getElementById("mapa");
   mapa.innerHTML = "";
@@ -94,31 +86,38 @@ function mostrarMapa(filtro = "") {
     let grade = document.createElement("div");
     grade.className = "grade";
 
-    andares.forEach(andar => {
+    andares.forEach(a => {
       for (let i = 1; i <= maxPosicoes; i++) {
 
-        let b = `${andar}${i}`;
+        let b = `${a}${i}`;
         let bloco = document.createElement("div");
         bloco.className = "bloco";
+        bloco.id = `${p}-${b}`;
+        bloco.draggable = true;
 
         let itens = estoque[p]?.[b];
 
+        // estrutura base
+        bloco.innerHTML = `
+          <strong>${b}</strong><br>
+          <button onclick="copiarBloco('${p}','${b}')">📋</button>
+          <button onclick="moverBloco('${p}','${b}')">🚚</button>
+          <button onclick="limparBloco('${p}','${b}')">🧹</button><br>
+        `;
+
         if (itens && itens.length > 0) {
 
-          let itensFiltrados = itens.filter(item =>
+          let filtrados = itens.filter(item =>
             item.nome.toLowerCase().includes(filtro)
           );
 
-          if (filtro && itensFiltrados.length === 0) {
+          if (filtro && filtrados.length === 0) {
             bloco.style.display = "none";
           }
 
           bloco.classList.add("ocupado");
-          bloco.id = `${p}-${b}`;
 
-          bloco.innerHTML = `<strong>${b}</strong><br>`;
-
-          itensFiltrados.forEach((item, i) => {
+          filtrados.forEach((item, i) => {
             bloco.innerHTML += `
               ${item.nome}<br>
               <button onclick="editarItem('${p}','${b}',${i})">✏️</button>
@@ -129,10 +128,22 @@ function mostrarMapa(filtro = "") {
 
         } else {
           bloco.classList.add("vazio");
-          bloco.innerHTML = `<strong>${b}</strong><br>Vazio`;
+          bloco.innerHTML += "Vazio";
 
           if (filtro) bloco.style.display = "none";
         }
+
+        // DRAG
+        bloco.addEventListener("dragstart", e => {
+          e.dataTransfer.setData("text/plain", `${p}|${b}`);
+        });
+
+        bloco.addEventListener("dragover", e => e.preventDefault());
+
+        bloco.addEventListener("drop", e => {
+          let [pOrig, bOrig] = e.dataTransfer.getData("text/plain").split("|");
+          moverBlocoDireto(pOrig, bOrig, p, b);
+        });
 
         grade.appendChild(bloco);
       }
@@ -143,25 +154,30 @@ function mostrarMapa(filtro = "") {
   });
 }
 
-// 🔍 Busca
+// 🔍 busca
 function buscarItem() {
   let valor = document.getElementById("busca").value;
   mostrarMapa(valor);
 }
 
-// ⚡ Leitura rápida
+// ⚡ leitura rápida
 function leituraRapida() {
   let busca = document.getElementById("busca").value.toLowerCase();
   let resultado = document.getElementById("resultado");
 
   resultado.innerHTML = "";
+
   if (!busca) return;
 
   let encontrados = [];
 
   for (let p in estoque) {
     for (let b in estoque[p]) {
-      estoque[p][b].forEach(item => {
+
+      let lista = estoque[p][b];
+      if (!Array.isArray(lista)) continue;
+
+      lista.forEach(item => {
         if (item.nome.toLowerCase().includes(busca)) {
           encontrados.push(`
             📍 ${item.nome} → ${p} > ${b}
@@ -177,71 +193,112 @@ function leituraRapida() {
     : "❌ Item não encontrado";
 }
 
-// 🎯 Ir até bloco
+// 📍 ir
 function irPara(p, b) {
   mostrarMapa();
 
   setTimeout(() => {
     let el = document.getElementById(`${p}-${b}`);
-    if (el) {
-      el.classList.add("highlight");
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    el?.classList.add("highlight");
   }, 100);
 }
 
-// ✏️ Editar
+// ✏️ editar
 function editarItem(p, b, i) {
-  let novoNome = prompt("Novo nome:");
+  let novo = prompt("Novo nome:");
 
-  if (novoNome) {
-    estoque[p][b][i] = { nome: novoNome };
+  if (novo) {
+    estoque[p][b][i].nome = novo;
+    adicionarHistorico(`Editou item em ${p}-${b}`);
     salvar();
     mostrarMapa();
   }
 }
 
-// ❌ Remover
+// ❌ remover
 function removerItem(p, b, i) {
+  if (!estoque[p]?.[b]?.[i]) return;
+
+  let nome = estoque[p][b][i].nome;
+
+  let confirmar = confirm(`Remover "${nome}" de ${p}-${b}?`);
+  if (!confirmar) return;
+
   estoque[p][b].splice(i, 1);
 
   if (estoque[p][b].length === 0) {
     delete estoque[p][b];
   }
 
+  adicionarHistorico(`Removeu "${nome}" de ${p}-${b}`);
+
   salvar();
   mostrarMapa();
-   adicionarHistorico(`removido item de ${p} ${b}`);
 }
 
-// 🔥 ATALHOS
-document.getElementById("prateleira").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    document.getElementById("bloco").focus();
+// 🧹 limpar bloco
+function limparBloco(p, b) {
+  if (!estoque[p]?.[b]) return alert("Bloco vazio!");
+
+  if (confirm(`Apagar tudo de ${p}-${b}?`)) {
+    delete estoque[p][b];
+    adicionarHistorico(`Limpou ${p}-${b}`);
+    salvar();
+    mostrarMapa();
   }
-});
+}
 
-document.getElementById("bloco").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    document.getElementById("nome").focus();
+// 📋 copiar
+function copiarBloco(p, b) {
+  if (!estoque[p]?.[b]) return alert("Nada para copiar!");
+
+  let destino = prompt("Copiar para (ex: A5)");
+  if (!destino) return;
+
+  destino = destino.toUpperCase();
+  if (!posicaoValida(destino)) return alert("Posição inválida!");
+
+  if (!estoque[p]) estoque[p] = {};
+
+  estoque[p][destino] = estoque[p][b].map(item => ({ ...item }));
+
+  adicionarHistorico(`Copiou ${p}-${b} para ${p}-${destino}`);
+
+  salvar();
+  mostrarMapa();
+}
+
+// 🚚 mover
+function moverBloco(p, b) {
+  let destino = prompt("Mover para (ex: A5)");
+  if (!destino) return;
+
+  destino = destino.toUpperCase();
+  if (!posicaoValida(destino)) return alert("Posição inválida!");
+
+  moverBlocoDireto(p, b, p, destino);
+}
+
+// 🔄 mover direto
+function moverBlocoDireto(pOrig, bOrig, pDest, bDest) {
+  if (!estoque[pOrig]?.[bOrig]) return;
+
+  if (estoque[pDest]?.[bDest]) {
+    if (!confirm(`Já existe algo em ${pDest}-${bDest}. Substituir?`)) return;
   }
-});
 
-document.getElementById("nome").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    adicionarItem();
-  }
-});
+  if (!estoque[pDest]) estoque[pDest] = {};
 
-// 🔠 AUTO MAIÚSCULO
-document.getElementById("prateleira").addEventListener("input", function() {
-  this.value = this.value.toUpperCase();
-});
+  estoque[pDest][bDest] = estoque[pOrig][bOrig];
+  delete estoque[pOrig][bOrig];
 
-document.getElementById("bloco").addEventListener("input", function() {
-  this.value = this.value.toUpperCase();
-});
+  adicionarHistorico(`Moveu ${pOrig}-${bOrig} para ${pDest}-${bDest}`);
 
-// 🚀 Inicializar
+  salvar();
+  mostrarMapa();
+}
+
+// 🚀 iniciar
 mostrarMapa();
 mostrarHistorico();
