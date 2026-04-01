@@ -251,3 +251,48 @@ button:hover {
 html {
   scroll-behavior: smooth;
 }
+
+/* Reasponsivo em Celulares */
+@media (max-width: 600px) {
+
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  /* Inputs em coluna */
+  .grupo-input {
+    flex-direction: column;
+  }
+
+  .input-padrao {
+    width: 100%;
+  }
+
+  /* Grid mais compacto */
+  .grade {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 6px;
+  }
+
+  /* Blocos menores */
+  .bloco {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  /* Botões menores */
+  .bloco-header button {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    padding: 2px;
+  }
+}
