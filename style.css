@@ -21,27 +21,36 @@ h1::after {
 }
 
 /* Inputs */
-input {
-  width:calc(100% - 20px);
-  padding: 12px;
-  margin: 5px 0;
+.input-padrao  {
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid #c8bca8;
-  background: #fffdf8;
+  width: 250px;
+  outline: none;
+  gap: 10px;
+}
+
+.input-padrao:focus {
+  border-color: #8b6f47;
+  box-shadow: 0 0 5px rgba(139, 111, 71, 0.5);
 }
 
 /* Botão */
 button {
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 5px 6px;
+  border-radius: 8px;
   border: none;
   background: #6d4c41;
   color: white;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 button:hover {
   background: #4e342e;
+  transform: scale(1.05);
+
+    
 }
 
 /* Resultado */
@@ -78,10 +87,11 @@ button:hover {
 .bloco {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
 
   background: linear-gradient(145deg,#d7ccc8, #bcaaa4);
-  padding: 10px;
+  padding: 8px;
+  gap: 4px;
   border-radius: 10px;
   min-height: 110px;
 
@@ -91,6 +101,78 @@ button:hover {
   text-align: center;
 
   font-size: 13px;
+}
+
+/* Bloco vazio/ocupado */
+
+.bloco.vazio {
+   background: #efebe9;
+  border: 2px dashed #bcaaa4;
+  opacity: 0,7;
+}
+
+.bloco.ocupado {
+  background: #d7ccc8;
+  border: 2px solid #5d4037;
+}
+
+/* Header */
+.bloco-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+/* Botões pequenos */
+.acoes {
+  display: flex;
+  gap: 2px;
+}
+
+.acoes button {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #6d4c41;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.acoes button:hover {
+  background: #4e342e;
+}
+
+/* Conteudo */
+.conteudo {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+/* Itens */
+.item{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3px;
+}
+
+/* Botões dos itens */
+.item button {
+  background: #8d6e63;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
 }
 
 /*  Efeito Caixa */
@@ -154,7 +236,18 @@ button:hover {
 #historico {
   background: #fff;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   max-height: 200px;
   overflow: auto;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#historico p {
+  margin: 4px 0;
+  padding: 5px 0;
+  font-size: 13px;
+}
+
+/* Scroll Suave */
+html {
+  scroll-behavior: smooth;
 }

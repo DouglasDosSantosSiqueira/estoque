@@ -98,40 +98,30 @@ function mostrarMapa(filtro = "") {
         let itens = estoque[p]?.[b];
 
         // estrutura base
-        bloco.innerHTML = `
-          <strong>${b}</strong><br>
-          <button onclick="copiarBloco('${p}','${b}')">📋</button>
-          <button onclick="moverBloco('${p}','${b}')">🚚</button>
-          <button onclick="limparBloco('${p}','${b}')">🧹</button><br>
-        `;
+       bloco.innerHTML = `
+  <div class="bloco-header">
+    <span>${b}</span>
+    <div class="acoes">
+      <button onclick="copiarBloco('${p}','${b}')">📋</button>
+      <button onclick="moverBloco('${p}','${b}')">🚚</button>
+      <button onclick="limparBloco('${p}','${b}')">🧹</button>
+    </div>
+  </div>
 
-        if (itens && itens.length > 0) {
+  <div class="conteudo">
+    ${itens && itens.length > 0 
+      ? itens.map((item, i) => `
+        <div class="item">
+          ${item.nome}
+          <button onclick="editarItem('${p}','${b}',${i})">✏️</button>
+          <button onclick="removerItem('${p}','${b}',${i})">❌</button>
+        </div>
+      `).join("")
+      : "Vazio"
+    }
+  </div>
+`;
 
-          let filtrados = itens.filter(item =>
-            item.nome.toLowerCase().includes(filtro)
-          );
-
-          if (filtro && filtrados.length === 0) {
-            bloco.style.display = "none";
-          }
-
-          bloco.classList.add("ocupado");
-
-          filtrados.forEach((item, i) => {
-            bloco.innerHTML += `
-              ${item.nome}<br>
-              <button onclick="editarItem('${p}','${b}',${i})">✏️</button>
-              <button onclick="removerItem('${p}','${b}',${i})">❌</button>
-              <hr>
-            `;
-          });
-
-        } else {
-          bloco.classList.add("vazio");
-          bloco.innerHTML += "Vazio";
-
-          if (filtro) bloco.style.display = "none";
-        }
 
         // DRAG
         bloco.addEventListener("dragstart", e => {
