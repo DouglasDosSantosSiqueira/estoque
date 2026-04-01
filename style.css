@@ -1,12 +1,12 @@
 body {
-  font-family: 'Georgia' , serif;
+  font-family: 'Georgia', serif;
   margin: 0;
   background: #f5f1e8;
   color: #3e2c23;
   padding: 20px;
 }
 
-/*  Titulo  */
+/* Titulo */
 h1 {
   text-align: center;
   margin-bottom: 10px;
@@ -21,13 +21,12 @@ h1::after {
 }
 
 /* Inputs */
-.input-padrao  {
+.input-padrao {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #c8bca8;
   width: 250px;
   outline: none;
-  gap: 10px;
 }
 
 .input-padrao:focus {
@@ -37,7 +36,7 @@ h1::after {
 
 /* Botão */
 button {
-  padding: 5px 6px;
+  padding: 6px 10px;
   border-radius: 8px;
   border: none;
   background: #6d4c41;
@@ -49,8 +48,6 @@ button {
 button:hover {
   background: #4e342e;
   transform: scale(1.05);
-
-    
 }
 
 /* Resultado */
@@ -66,24 +63,15 @@ button:hover {
   margin-bottom: 25px;
 }
 
-/* Andar */
-.andar {
-  margin-bottom: 15px;
-}
-
-.andar h4 {
-  margin-bottom: 5px;
-}
-
 /* Grade */
 .grade {
   display: grid;
-  grid-template-columns: repeat(14, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
   margin-top: 10px;
 }
 
-/* Blocos ( Pallets)*/
+/* Blocos */
 .bloco {
   display: flex;
   flex-direction: column;
@@ -95,20 +83,19 @@ button:hover {
   border-radius: 10px;
   min-height: 110px;
 
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2),
+              0 4px 6px rgba(0,0,0,0.15);
 
   position: relative;
   text-align: center;
-
   font-size: 13px;
 }
 
-/* Bloco vazio/ocupado */
-
+/* Estado */
 .bloco.vazio {
-   background: #efebe9;
+  background: #efebe9;
   border: 2px dashed #bcaaa4;
-  opacity: 0,7;
+  opacity: 0.7;
 }
 
 .bloco.ocupado {
@@ -124,135 +111,73 @@ button:hover {
   font-weight: bold;
 }
 
-/* Botões pequenos */
+/* Botões do header */
 .acoes {
   display: flex;
-  gap: 2px;
+  gap: 4px;
 }
 
 .acoes button {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
   padding: 0;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #6d4c41;
-  color: white;
-  border: none;
   border-radius: 5px;
-  padding: 2px 6px;
-  font-size: 12px;
-  cursor: pointer;
-}
-.acoes button:hover {
-  background: #4e342e;
 }
 
-/* Conteudo */
+/* Conteúdo */
 .conteudo {
-  margin-top: 5px;
+  margin-top: 4px;
   font-size: 13px;
 }
 
-/* Itens */
-.item{
-  display:flex;
+/* Item */
+.item {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
 /* Botões dos itens */
 .item button {
   background: #8d6e63;
-  color: white;
-  border: none;
   border-radius: 5px;
   padding: 2px 6px;
   font-size: 11px;
-  cursor: pointer;
 }
 
-/*  Efeito Caixa */
+/* Ícone */
 .bloco::before {
-  content:"📦";
+  content: "📦";
   position: absolute;
   top: 5px;
   right: 8px;
   font-size: 14px;
-  opacity: 0,6;
-}
-
-.ocupado {
-  background: 5px solid #5d4037;
-}
-
-.vazio {
-  background: #efebe9;
-  border: 2px dashed #bcaaa4;
-  opacity: 0,7;
+  opacity: 0.6;
 }
 
 /* Destaque */
 .highlight {
   border: 3px solid #ff9800 !important;
   transform: scale(1.05);
-
 }
 
-/* Botões dentro do bloco */
-
-.bloco button {
-  font-size: 11px;
-  margin-top: 4px;
-  background: #8d6e63;
-}
-
-.bloco button:hover {
-  background: #5d4037;
-}
-
-/* Texto do item */
-.bloco strong {
-  font-size: 14px;
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* Responsivo */
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  .grade {
-    grid-template-columns: repeat(7, 1fr); /* quebra em 2 linhas no celular */
-  }
-}
-
-/* historico */
+/* Histórico */
 #historico {
   background: #fff;
   padding: 10px;
   border-radius: 10px;
   max-height: 200px;
   overflow: auto;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-#historico p {
-  margin: 4px 0;
-  padding: 5px 0;
-  font-size: 13px;
 }
 
-/* Scroll Suave */
+/* Scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Reasponsivo em Celulares */
+/* 📱 MOBILE */
 @media (max-width: 600px) {
 
   body {
@@ -263,36 +188,33 @@ html {
     font-size: 20px;
   }
 
-  h2 {
-    font-size: 16px;
-  }
-
-  /* Inputs em coluna */
-  .grupo-input {
-    flex-direction: column;
-  }
-
+  /* Inputs */
   .input-padrao {
     width: 100%;
   }
 
-  /* Grid mais compacto */
+  /* Grid responsivo */
   .grade {
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
     gap: 6px;
   }
 
   /* Blocos menores */
   .bloco {
     padding: 6px;
-    font-size: 12px;
+    font-size: 11px;
+    min-height: 90px;
   }
 
   /* Botões menores */
-  .bloco-header button {
-    width: 24px;
-    height: 24px;
+  .acoes button {
+    width: 20px;
+    height: 20px;
     font-size: 10px;
-    padding: 2px;
+  }
+
+  .item button {
+    font-size: 10px;
+    padding: 2px 4px;
   }
 }
