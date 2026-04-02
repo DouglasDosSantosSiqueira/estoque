@@ -9,17 +9,32 @@
 
 <h1>📦 Localizador de Estoque</h1>
 
+<!-- busca -->
+<div class="card">
 <h2>🔍 Buscar</h2>
 <input type="text" id="busca" class="input-padrao" placeholder="Digite o item..." oninput="buscarItem(); leituraRapida();">
+</div>
 
+<!-- Resultado rápido -->
+<div class="card">
 <h2>📍 Resultado rápido</h2>
 <div id="resultado" class="input-padrao"></div>
+</div>
 
-<h2>➕ Adicionar Item</h2>
-<input type="text" id="prateleira" class="input-padrao" placeholder="Prateleira (P1 a P8)">
-<input type="text" id="bloco" class="input-padrao" placeholder="Posição (ex: A12)">
-<input type="text" id="nome" class="input-padrao" placeholder="Nome do item">
-<button onclick="adicionarItem()">Adicionar</button>
+<!-- Adicionar item -->
+<div class="card">
+
+  <h2>➕ Adicionar Item</h2>
+
+  <div class="grupo-input">
+    <input type="text" id="prateleira" class="input-padrao" placeholder="Prateleira (P1 a P8)">
+    <input type="text" id="bloco" class="input-padrao" placeholder="Posição (ex: A12)">
+    <input type="text" id="nome" class="input-padrao" placeholder="Nome do item">
+    <button onclick="adicionarItem()">Adicionar</button>
+
+  </div>
+
+</div>
 
 <h2>🗺️ Mapa</h2>
 <div id="mapa"></div>

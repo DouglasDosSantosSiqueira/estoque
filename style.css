@@ -20,11 +20,24 @@ h1::after {
   color: #8b6f47;
 }
 
+/* Titulo das seções */
+h2 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 22px;
+  border-bottom: 2px solid #8b6f47;
+  padding-bottom: 5px;
+}
+
 /* Inputs */
 .input-padrao {
+  flex: 1;
+  min-width: 100px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #c8bca8;
+  background: #2c2c2c;
+  color: #f5f1e8;
   width: 250px;
   outline: none;
 }
@@ -32,6 +45,12 @@ h1::after {
 .input-padrao:focus {
   border-color: #8b6f47;
   box-shadow: 0 0 5px rgba(139, 111, 71, 0.5);
+}
+
+.grupo-input {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 /* Botão */
@@ -91,6 +110,14 @@ button:hover {
   font-size: 13px;
 }
 
+.card {
+  background: #8d6e63;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
 /* Estado */
 .bloco.vazio {
   background: #efebe9;
@@ -99,8 +126,14 @@ button:hover {
 }
 
 .bloco.ocupado {
-  background: #d7ccc8;
+  background: linear-gradient(145deg, #856e68, #92847f);
   border: 2px solid #5d4037;
+  color: #fff1e8;
+}
+
+.bloco.ocupado:hover {
+  transform: scale(1.03);
+  transition: 0.2s;
 }
 
 /* Header */

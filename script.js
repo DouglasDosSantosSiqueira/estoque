@@ -92,6 +92,7 @@ function mostrarMapa(filtro = "") {
         let b = `${a}${i}`;
         let bloco = document.createElement("div");
         bloco.className = "bloco";
+        bloco.classList.add(estoque[p]?.[b] ? "ocupado" : "vazio");
         bloco.id = `${p}-${b}`;
         bloco.draggable = true;
 
