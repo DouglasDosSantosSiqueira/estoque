@@ -69,6 +69,7 @@ function adicionarItem() {
   document.getElementById("prateleira").value = "";
   document.getElementById("bloco").value = "";
   document.getElementById("nome").value = "";
+  document.getElementById("prateleira").focus();
 }
 
 // 🗺️ mapa
@@ -293,3 +294,41 @@ function moverBlocoDireto(pOrig, bOrig, pDest, bDest) {
 // 🚀 iniciar
 mostrarMapa();
 mostrarHistorico();
+
+// 🔠 MAIÚSCULO AUTOMÁTICO E NAVEGAÇÃO MELHORADA
+document.addEventListener('DOMContentLoaded', function() {
+  // Maiúsculo automático
+  document.getElementById("prateleira").addEventListener("input", function () {
+    this.value = this.value.toUpperCase();
+  });
+
+  document.getElementById("bloco").addEventListener("input", function () {
+    this.value = this.value.toUpperCase();
+  });
+
+  document.getElementById("busca").addEventListener("input", function () {
+    this.value = this.value.toUpperCase();
+  });
+
+  // ⌨️ ENTER PARA NAVEGAR (keydown mais confiável)
+  document.getElementById("prateleira").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("bloco").focus();
+    }
+  });
+
+  document.getElementById("bloco").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("nome").focus();
+    }
+  });
+
+  document.getElementById("nome").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      adicionarItem();
+    }
+  });
+});
