@@ -235,6 +235,16 @@ function mostrarMapa(filtro = "") {
           moverBlocoDireto(pOrig, bOrig, p, b);
         });
 
+        // 🛡️ PROTECT BUTTONS FROM TOUCH INTERFERENCE (Mobile fix)
+        bloco.querySelectorAll('.acoes button').forEach(btn => {
+          ['touchstart', 'touchend', 'click'].forEach(evt => {
+            btn.addEventListener(evt, e => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }, {passive: true});
+          });
+        });
+
         grade.appendChild(bloco);
       }
     });
