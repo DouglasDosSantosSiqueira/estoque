@@ -128,7 +128,7 @@ function mostrarMapa(filtro = "") {
         let ghost = null;
         let highlighted = null;
 
-// INÍCIO TOQUE (Long press 2s)
+// INÍCIO TOQUE (Long press 0,5s)
         let longPressTimer = null;
         let startX, startY;
         
