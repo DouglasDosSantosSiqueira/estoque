@@ -151,7 +151,7 @@ function mostrarMapa(filtro = "") {
             ghost.style.height = bloco.offsetHeight + 'px';
             ghost.style.pointerEvents = 'none';
             document.body.appendChild(ghost);
-          }, 2000); // 2 segundos
+          }, 500); // 0,5 segundos
         }, {passive: true}); // Permite scroll
         
         bloco.addEventListener('touchend', e => {
