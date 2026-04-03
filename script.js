@@ -95,8 +95,7 @@ function mostrarMapa(filtro = "") {
         bloco.className = "bloco";
         bloco.classList.add(estoque[p]?.[b] ? "ocupado" : "vazio");
         bloco.id = `${p}-${b}`;
-        bloco.draggable = true;
-
+        bloco.draggable = true; // Required for desktop DnD
         let itens = estoque[p]?.[b];
 
         // estrutura base
@@ -124,8 +123,71 @@ function mostrarMapa(filtro = "") {
   </div>
 `;
 
+// DnD COMPLETO (Desktop + Touch Mobile)
+        let dragData = null;
+        let ghost = null;
+        let highlighted = null;
 
-        // DRAG
+        // INÍCIO TOQUE
+        bloco.addEventListener('touchstart', e => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          dragData = {p, b};
+          
+          // Cria fantasma
+          ghost = bloco.cloneNode(true);
+          ghost.classList.add('drag-ghost');
+          ghost.style.position = 'fixed';
+          ghost.style.left = touch.clientX + 'px';
+          ghost.style.top = touch.clientY + 'px';
+          ghost.style.width = bloco.offsetWidth + 'px';
+          ghost.style.height = bloco.offsetHeight + 'px';
+          ghost.style.pointerEvents = 'none';
+          document.body.appendChild(ghost);
+        }, {passive: false});
+
+// MOVIMENTO TOQUE
+        bloco.addEventListener('touchmove', e => {
+          if (!ghost || !dragData) return;
+          e.preventDefault();
+          
+          const touch = e.touches[0];
+          ghost.style.left = (touch.clientX - ghost.offsetWidth/2) + 'px';
+          ghost.style.top = (touch.clientY - ghost.offsetHeight/2) + 'px';
+          
+          // Encontra alvo drop
+          const el = document.elementFromPoint(touch.clientX, touch.clientY);
+          const dropTarget = el?.closest('.bloco');
+          
+          // Limpa anterior
+          if (highlighted) highlighted.classList.remove('drag-highlight');
+          
+          if (dropTarget && dropTarget !== bloco) {
+            highlighted = dropTarget;
+            dropTarget.classList.add('drag-highlight');
+          }
+        }, {passive: false});
+
+// FIM TOQUE
+        bloco.addEventListener('touchend', e => {
+          e.preventDefault();
+          
+          if (ghost) {
+            document.body.removeChild(ghost);
+            ghost = null;
+          }
+          
+          if (highlighted) {
+            highlighted.classList.remove('drag-highlight');
+            const id = highlighted.id; // Formato P1-B6
+            const [pDest, bDest] = id.split('-');
+            moverBlocoDireto(dragData.p, dragData.b, pDest, bDest);
+            dragData = null;
+            highlighted = null;
+          }
+        }, {passive: false});
+
+        // FALLBACK MOUSE (Desktop)
         bloco.addEventListener("dragstart", e => {
           e.dataTransfer.setData("text/plain", `${p}|${b}`);
         });
@@ -279,13 +341,16 @@ function moverBloco(p, b) {
 // 🔄 mover direto
 function moverBlocoDireto(pOrig, bOrig, pDest, bDest) {
   if (!estoque[pOrig]?.[bOrig]) return;
-
-
+  
+  // No-op if same location
+  if (pOrig === pDest && bOrig === bDest) return;
+  
+  // Confirm move to different location  
+  const sourceItems = estoque[pOrig][bOrig]; // Count before confirm
+  if (!confirm(`Mover ${sourceItems.length} itens de ${pOrig}-${bOrig} para ${pDest}-${bDest}?`)) return;
 
   if (!estoque[pDest]) estoque[pDest] = {};
   if (!estoque[pDest][bDest]) estoque[pDest][bDest] = [];
-  
-  const sourceItems = estoque[pOrig][bOrig];
   sourceItems.forEach(item => {
     estoque[pDest][bDest].push({ ...item });
   });

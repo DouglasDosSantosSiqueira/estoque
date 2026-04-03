@@ -210,36 +210,39 @@ html {
   scroll-behavior: smooth;
 }
 
-/* 📱 MOBILE */
-@media (max-width: 600px) {
+/* 📱 MOBILE + TOUCH */
+.bloco {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
+@media (max-width: 600px) {
   body {
     padding: 10px;
+    touch-action: pan-y;
   }
 
   h1 {
     font-size: 20px;
   }
 
-  /* Inputs */
   .input-padrao {
     width: 100%;
   }
 
-  /* Grid responsivo */
   .grade {
     grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
     gap: 6px;
   }
 
-  /* Blocos menores */
   .bloco {
     padding: 6px;
     font-size: 11px;
     min-height: 90px;
   }
 
-  /* Botões menores */
   .acoes button {
     width: 20px;
     height: 20px;
@@ -250,4 +253,19 @@ html {
     font-size: 10px;
     padding: 2px 4px;
   }
+}
+
+/* Drag ghost */
+.drag-ghost {
+  opacity: 0.8 !important;
+  transform: rotate(5deg) scale(1.05) !important;
+  z-index: 1000 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
+  pointer-events: none !important;
+}
+
+.drag-highlight {
+  border: 3px solid #4caf50 !important;
+  background: rgba(76,175,80,0.2) !important;
+  transform: scale(1.05) !important;
 }
