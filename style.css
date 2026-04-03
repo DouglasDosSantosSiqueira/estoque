@@ -244,11 +244,11 @@ html {
   }
 
   .acoes button {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    min-height: 32px;
-    font-size: 12px;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    min-height: 26px;
+    font-size: 11px;
     touch-action: manipulation;
     pointer-events: auto;
   }

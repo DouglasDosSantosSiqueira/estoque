@@ -235,8 +235,19 @@ function mostrarMapa(filtro = "") {
           moverBlocoDireto(pOrig, bOrig, p, b);
         });
 
-        // 🛡️ PROTECT BUTTONS FROM TOUCH INTERFERENCE (Mobile fix)
+        // 🛡️ PROTECT ALL BUTTONS FROM TOUCH INTERFERENCE (Mobile fix)
+        // Header buttons (📋🚚🧹)
         bloco.querySelectorAll('.acoes button').forEach(btn => {
+          ['touchstart', 'touchend', 'click'].forEach(evt => {
+            btn.addEventListener(evt, e => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }, {passive: true});
+          });
+        });
+        
+        // Item buttons (✏️❌)
+        bloco.querySelectorAll('.item button').forEach(btn => {
           ['touchstart', 'touchend', 'click'].forEach(evt => {
             btn.addEventListener(evt, e => {
               e.stopPropagation();
