@@ -252,40 +252,47 @@ function copiarBloco(p, b) {
   if (!posicaoValida(destino)) return alert("Posição inválida!");
 
   if (!estoque[p]) estoque[p] = {};
-
-  estoque[p][destino] = estoque[p][b].map(item => ({ ...item }));
-
-  adicionarHistorico(`Copiou ${p}-${b} para ${p}-${destino}`);
-
+  if (!estoque[p][destino]) estoque[p][destino] = [];
+  
+  const sourceItems = estoque[p][b];
+  sourceItems.forEach(item => {
+    estoque[p][destino].push({ ...item });
+  });
+  
+  adicionarHistorico(`Copiou ${sourceItems.length} itens de ${p}-${b} para ${p}-${destino}`);
+  
   salvar();
   mostrarMapa();
 }
 
 // 🚚 mover
 function moverBloco(p, b) {
-  let destino = prompt("Mover para (ex: A5)");
-  if (!destino) return;
-
-  destino = destino.toUpperCase();
-  if (!posicaoValida(destino)) return alert("Posição inválida!");
-
-  moverBlocoDireto(p, b, p, destino);
+  let pDest = prompt("Prateleira destino (P1-P8):").toUpperCase();
+  if (!pDest || !prateleirasFixas.includes(pDest)) return alert("Prateleira inválida! Use P1-P8");
+  
+  let bDest = prompt("Bloco destino (ex: A5):").toUpperCase();
+  if (!bDest || !posicaoValida(bDest)) return alert("Bloco inválido! Use A1-D14");
+  
+  moverBlocoDireto(p, b, pDest, bDest);
 }
 
 // 🔄 mover direto
 function moverBlocoDireto(pOrig, bOrig, pDest, bDest) {
   if (!estoque[pOrig]?.[bOrig]) return;
 
-  if (estoque[pDest]?.[bDest]) {
-    if (!confirm(`Já existe algo em ${pDest}-${bDest}. Substituir?`)) return;
-  }
+
 
   if (!estoque[pDest]) estoque[pDest] = {};
-
-  estoque[pDest][bDest] = estoque[pOrig][bOrig];
+  if (!estoque[pDest][bDest]) estoque[pDest][bDest] = [];
+  
+  const sourceItems = estoque[pOrig][bOrig];
+  sourceItems.forEach(item => {
+    estoque[pDest][bDest].push({ ...item });
+  });
+  
   delete estoque[pOrig][bOrig];
 
-  adicionarHistorico(`Moveu ${pOrig}-${bOrig} para ${pDest}-${bDest}`);
+  adicionarHistorico(`Moveu ${sourceItems.length} itens de ${pOrig}-${bOrig} para ${pDest}-${bDest}`);
 
   salvar();
   mostrarMapa();
