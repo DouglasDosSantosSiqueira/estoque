@@ -124,11 +124,12 @@ function mostrarMapa(filtro = "") {
 `;
 
 // DnD COMPLETO (Desktop + Touch Mobile)
-        let dragData = null;
+let dragData = null;
         let ghost = null;
         let highlighted = null;
-
-// INÍCIO TOQUE (Long press 0,5s)
+        let lastValidTarget = null; // NEW: Track best drop target
+        
+// INÍCIO TOQUE (Long press 0,3s - REDUCED)
         let longPressTimer = null;
         let startX, startY;
         
@@ -141,18 +142,25 @@ function mostrarMapa(filtro = "") {
             e.preventDefault();
             dragData = {p, b};
             
+            // Visual feedback during long press
+            bloco.style.background = 'rgba(76,175,80,0.3)';
+            
+            // Haptic feedback (mobile)
+            if (navigator.vibrate) navigator.vibrate(50);
+            
             // Cria fantasma após long press
             ghost = bloco.cloneNode(true);
             ghost.classList.add('drag-ghost');
             ghost.style.position = 'fixed';
-            ghost.style.left = touch.clientX + 'px';
-            ghost.style.top = touch.clientY + 'px';
+            ghost.style.left = (touch.clientX - bloco.offsetWidth/2) + 'px';
+            ghost.style.top = (touch.clientY - bloco.offsetHeight/2) + 'px';
             ghost.style.width = bloco.offsetWidth + 'px';
             ghost.style.height = bloco.offsetHeight + 'px';
             ghost.style.pointerEvents = 'none';
+            ghost.style.zIndex = '9999';
             document.body.appendChild(ghost);
-          }, 500); // 0,5 segundos
-        }, {passive: true}); // Permite scroll
+          }, 300); // Reduced to 0.3s for better UX
+        }, {passive: true});
         
         bloco.addEventListener('touchend', e => {
           if (longPressTimer) {
@@ -182,7 +190,7 @@ function mostrarMapa(filtro = "") {
           }
         }, {passive: true});
 
-// MOVIMENTO TOQUE
+// MOVIMENTO TOQUE - IMPROVED DETECTION
         bloco.addEventListener('touchmove', e => {
           if (!ghost || !dragData) return;
           e.preventDefault();
@@ -191,22 +199,49 @@ function mostrarMapa(filtro = "") {
           ghost.style.left = (touch.clientX - ghost.offsetWidth/2) + 'px';
           ghost.style.top = (touch.clientY - ghost.offsetHeight/2) + 'px';
           
-          // Encontra alvo drop
-          const el = document.elementFromPoint(touch.clientX, touch.clientY);
-          const dropTarget = el?.closest('.bloco');
+          // IMPROVED: Find drop target with tolerance
+          const rect = bloco.getBoundingClientRect();
+          const tolerance = 60; // pixels around touch
           
-          // Limpa anterior
+          let bestTarget = null;
+          let bestDistance = Infinity;
+          
+          // Check nearby blocks
+          document.querySelectorAll('.bloco').forEach(target => {
+            if (target === bloco) return;
+            
+            const targetRect = target.getBoundingClientRect();
+            const dx = touch.clientX - (targetRect.left + targetRect.width/2);
+            const dy = touch.clientY - (targetRect.top + targetRect.height/2);
+            const distance = Math.sqrt(dx*dx + dy*dy);
+            
+            if (distance < tolerance && distance < bestDistance) {
+              bestTarget = target;
+              bestDistance = distance;
+            }
+          });
+          
+          // Fallback to direct elementFromPoint
+          if (!bestTarget) {
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            bestTarget = el?.closest('.bloco');
+          }
+          
+          // Update highlight + track best target
           if (highlighted) highlighted.classList.remove('drag-highlight');
-          
-          if (dropTarget && dropTarget !== bloco) {
-            highlighted = dropTarget;
-            dropTarget.classList.add('drag-highlight');
+          if (bestTarget && bestTarget !== bloco) {
+            highlighted = bestTarget;
+            highlighted.classList.add('drag-highlight');
+            lastValidTarget = bestTarget; // Store best candidate
           }
         }, {passive: false});
 
-// FIM TOQUE
+// FIM TOQUE - FIXED DROP LOGIC
         bloco.addEventListener('touchend', e => {
           e.preventDefault();
+          
+          // Restore original style
+          bloco.style.background = '';
           
           if (ghost) {
             document.body.removeChild(ghost);
@@ -215,12 +250,24 @@ function mostrarMapa(filtro = "") {
           
           if (highlighted) {
             highlighted.classList.remove('drag-highlight');
-            const id = highlighted.id; // Formato P1-B6
-            const [pDest, bDest] = id.split('-');
-            moverBlocoDireto(dragData.p, dragData.b, pDest, bDest);
-            dragData = null;
-            highlighted = null;
           }
+          
+          // FIXED: Use lastValidTarget as primary, fallback to highlighted
+          const finalTarget = lastValidTarget || highlighted;
+          if (finalTarget && dragData) {
+            const id = finalTarget.id;
+            const [pDest, bDest] = id.split('-');
+            
+            // Debug log
+            console.log(`Dropping ${dragData.p}-${dragData.b} → ${pDest}-${bDest}`);
+            
+            moverBlocoDireto(dragData.p, dragData.b, pDest, bDest);
+          }
+          
+          // Reset all
+          dragData = null;
+          highlighted = null;
+          lastValidTarget = null;
         }, {passive: false});
 
         // FALLBACK MOUSE (Desktop)
