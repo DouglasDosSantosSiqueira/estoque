@@ -128,23 +128,59 @@ function mostrarMapa(filtro = "") {
         let ghost = null;
         let highlighted = null;
 
-        // INÍCIO TOQUE
+// INÍCIO TOQUE (Long press 2s)
+        let longPressTimer = null;
+        let startX, startY;
+        
         bloco.addEventListener('touchstart', e => {
-          e.preventDefault();
           const touch = e.touches[0];
-          dragData = {p, b};
+          startX = touch.clientX;
+          startY = touch.clientY;
           
-          // Cria fantasma
-          ghost = bloco.cloneNode(true);
-          ghost.classList.add('drag-ghost');
-          ghost.style.position = 'fixed';
-          ghost.style.left = touch.clientX + 'px';
-          ghost.style.top = touch.clientY + 'px';
-          ghost.style.width = bloco.offsetWidth + 'px';
-          ghost.style.height = bloco.offsetHeight + 'px';
-          ghost.style.pointerEvents = 'none';
-          document.body.appendChild(ghost);
-        }, {passive: false});
+          longPressTimer = setTimeout(() => {
+            e.preventDefault();
+            dragData = {p, b};
+            
+            // Cria fantasma após long press
+            ghost = bloco.cloneNode(true);
+            ghost.classList.add('drag-ghost');
+            ghost.style.position = 'fixed';
+            ghost.style.left = touch.clientX + 'px';
+            ghost.style.top = touch.clientY + 'px';
+            ghost.style.width = bloco.offsetWidth + 'px';
+            ghost.style.height = bloco.offsetHeight + 'px';
+            ghost.style.pointerEvents = 'none';
+            document.body.appendChild(ghost);
+          }, 2000); // 2 segundos
+        }, {passive: true}); // Permite scroll
+        
+        bloco.addEventListener('touchend', e => {
+          if (longPressTimer) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+            dragData = null;
+          }
+          if (ghost) {
+            document.body.removeChild(ghost);
+            ghost = null;
+          }
+          if (highlighted) {
+            highlighted.classList.remove('drag-highlight');
+            highlighted = null;
+          }
+        }, {passive: true});
+        
+        bloco.addEventListener('touchmove', e => {
+          if (longPressTimer) {
+            const touch = e.touches[0];
+            const deltaX = Math.abs(touch.clientX - startX);
+            const deltaY = Math.abs(touch.clientY - startY);
+            if (deltaX > 10 || deltaY > 10) { // Cancela se move muito
+              clearTimeout(longPressTimer);
+              longPressTimer = null;
+            }
+          }
+        }, {passive: true});
 
 // MOVIMENTO TOQUE
         bloco.addEventListener('touchmove', e => {
