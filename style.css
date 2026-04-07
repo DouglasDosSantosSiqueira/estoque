@@ -198,10 +198,10 @@ button:hover {
 
 /* Histórico */
 #historico {
-  background: #fff;
+  background: #f5f1e8;
   padding: 10px;
   border-radius: 10px;
-  max-height: 200px;
+  max-height: 52px;
   overflow: auto;
 }
 
