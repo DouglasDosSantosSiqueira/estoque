@@ -1,15 +1,11 @@
-# TODO - Fix Mobile Drag & Drop ✅ FIXED
+# TODO - Deploy to GitHub Pages
 
-**Completed:**
-- ✅ Step 1: Created TODO.md
-- ✅ Step 2: Implemented improved touch detection (lastValidTarget, 60px tolerance proximity search + fallback, z-index/centering fixes)
-- ✅ Step 3: Reduced long press to 300ms, added visual green bg + haptic vibrate(50)
-- ✅ Step 4: Fixed touchend drop logic (uses lastValidTarget primary + console.log debug)
+**Plan Breakdown:**
+1. [x] Step 1: Create TODO.md with deployment steps
+2. [ ] Step 2: Git commit current localStorage version
+3. [ ] Step 3: Git push to blackboxai/firebase-migration
+4. [ ] Step 4: Create PR to main via GitHub web
+5. [ ] Step 5: Enable GitHub Pages (main branch, / root)
+6. [ ] Step 6: Test live URL https://douglasdossantossiqueira.github.io/estoque/
 
-**Remaining:**
-- [ ] Step 5: Manual testing on mobile recommended (add item to P1-A1, long press drag to empty bloco, check localStorage + map)
-- [ ] Step 6: Complete
-
-Open index.html in mobile browser to test. Check console for drop logs.
-
-
+**Next:** Run git commands, then manual PR/PAGES.
