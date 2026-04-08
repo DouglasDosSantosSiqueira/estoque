@@ -3,10 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>Estoque Inteligente</title>
+  <title>Estoque Inteligente - Firebase</title>
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Firebase CDN Modules -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="auth.js"></script>
 </head>
 <body>
+
+<!-- Tela Login -->
+<div id="loginScreen" class="login-container">
+  <div class="login-card">
+    <h2>🔐 Login / Registro</h2>
+    
+    <!-- Registro -->
+    <div class="login-form">
+      <h3>➕ Novo Usuário</h3>
+      <input type="text" id="regNome" placeholder="Nome completo">
+      <input type="email" id="regEmail" placeholder="Email">
+      <input type="password" id="regPassword" placeholder="Senha">
+      <button onclick="register()">Registrar (Funcionário)</button>
+    </div>
+    
+    <!-- Login -->
+    <div class="login-form">
+      <h3>📥 Entrar</h3>
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Senha">
+      <button onclick="login()">Entrar</button>
+      <button onclick="logout()">Sair</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main App (escondido até login) -->
+<div id="main" style="display: none;">
 
 <h1>📦 Localizador de Estoque</h1>
 
